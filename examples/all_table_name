@@ -1,0 +1,36 @@
+
+
+def loopallnode(p):
+    for i in range(0,len(p.tokens)):
+        if isinstance(p.tokens[i], Identifier) or isinstance(p.tokens[i], IdentifierList):
+#          print p.tokens[i].value,p.tokens[i-2].value.upper()
+          if i>=2 :
+            m = p.tokens[i-2].value.upper()
+            if  m == 'FROM' or m == 'INTO' or m == 'UPDATE' or m == 'TABLE' or m == 'DESC' or m == 'DESCRIBE' or m =='VIEW':
+                 if hasattr(p.tokens[i],'tokens') :
+                       for j in range (0, len(p.tokens[i].tokens)):
+                          if isinstance(p.tokens[i].tokens[j], Identifier) :
+                             print p.tokens[i].tokens[j].value
+                             p.tokens[i].tokens[j].tokens[0].value = "ooo"
+                          else:
+                             print p.tokens[i].value
+                             p.tokens[i].tokens[0].value="kkk1"
+
+#
+                       pass
+        if  hasattr(p.tokens[i],'tokens') :
+           loopallnode(p.tokens[i])
+        else:
+           pass
+
+
+
+def extract_tables(sql):
+    global p1
+    stream = extract_from_part(sqlparse.parse(sql)[0])
+    p1 = sqlparse.parse(sql)[0]
+    print p1._pprint_tree()
+    loopallnode(p1)
+    print str(p1)
+    return list(extract_table_identifiers(stream))
+
